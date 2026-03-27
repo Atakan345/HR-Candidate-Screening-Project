@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+python-multipart
+PyPDF2
+gspread
+oauth2client
+google-generativeai
+jinja2
+python-dotenv

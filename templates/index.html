@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Candidate Screening</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #ecfdf5;
+            --bg-grad-start: #f8fafc;
+            --bg-grad-end: #e2e8f0;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, var(--bg-grad-start) 0%, var(--bg-grad-end) 100%); 
+            margin: 0; 
+            padding: 40px 20px; 
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .container { 
+            max-width: 750px; 
+            margin: 0 auto; 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: var(--card-shadow); 
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        h1 { 
+            color: var(--text-dark); 
+            text-align: center; 
+            font-weight: 700;
+            margin-top: 0;
+            font-size: 28px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            text-align: center; 
+            color: var(--text-light);
+            margin-bottom: 35px;
+            font-size: 15px;
+        }
+
+        .upload-area { 
+            border: 2px dashed #cbd5e1; 
+            border-radius: 16px; 
+            padding: 50px 20px; 
+            text-align: center; 
+            cursor: pointer; 
+            margin-bottom: 30px; 
+            background-color: #f8fafc; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+
+        .upload-area:hover, .upload-area.dragover { 
+            background-color: #eff6ff;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        #fileInput { display: none; }
+
+        .btn { 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            padding: 14px 28px; 
+            font-size: 16px; 
+            font-weight: 600;
+            border-radius: 10px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2), 0 2px 4px -2px rgba(79, 70, 229, 0.1);
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .btn:hover:not(:disabled) { 
+            background: var(--primary-hover); 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3), 0 4px 6px -4px rgba(79, 70, 229, 0.2);
+        }
+
+        .btn:disabled { 
+            background: #cbd5e1; 
+            color: #94a3b8;
+            cursor: not-allowed; 
+            box-shadow: none;
+            transform: none;
+        }
+
+        #loading { 
+            display: none; 
+            text-align: center; 
+            margin: 30px 0; 
+            font-weight: 500; 
+            color: var(--primary); 
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        #result { 
+            display: none; 
+            margin-top: 40px; 
+            border-top: 1px solid #e2e8f0; 
+            padding-top: 30px; 
+        }
+
+        #result h2 {
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: var(--text-dark);
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .result-item { 
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 16px;
+            border-radius: 12px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .result-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-label { 
+            font-weight: 600; 
+            color: var(--text-light); 
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .result-value { 
+            font-size: 15px;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .score-box {
+            display: flex;
+            align-items: center;
+        }
+
+        .score { 
+            font-size: 28px; 
+            font-weight: 800; 
+            color: var(--success); 
+        }
+
+        .class-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #eff6ff;
+            color: var(--primary);
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .error { 
+            color: var(--danger); 
+            font-weight: 500; 
+            background: #fef2f2;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--danger);
+        }
+
+        .sync-status { 
+            text-align: center;
+            font-size: 13px; 
+            color: var(--text-light); 
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>HR Candidate Screening</h1>
+    <p class="subtitle">Upload a candidate's CV (PDF) for automated AI analysis.</p>
+
+    <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">📄</div>
+        <p style="margin: 0; font-weight: 500; font-size: 16px;">Drag and drop a PDF file here</p>
+        <p style="margin: 5px 0 0; font-size: 14px; color: var(--text-light);">or click to browse your files</p>
+        <input type="file" id="fileInput" accept="application/pdf">
+        <div id="fileName" style="margin-top: 15px; font-weight: 600; color: var(--primary);"></div>
+    </div>
+
+    <div style="text-align: center;">
+        <button id="analyzeBtn" class="btn" disabled>
+            ✨ Analyze Candidate
+        </button>
+    </div>
+
+    <div id="loading">Processing document through AI pipeline...</div>
+
+    <div id="result">
+        <h2>Analysis Result</h2>
+        <div id="errorMessage" class="error"></div>
+        <div id="successContent">
+            <div class="result-grid">
+                <div class="result-item">
+                    <div class="result-label">Candidate Name</div>
+                    <div class="result-value" id="resName" style="font-weight: 600;"></div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Experience</div>
+                    <div class="result-value"><span id="resExp"></span> Years</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Suitability Score</div>
+                    <div class="result-value score-box"><span class="score" id="resScore"></span></div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Classification</div>
+                    <div class="result-value"><span class="class-badge" id="resClass"></span></div>
+                </div>
+                <div class="result-item full-width">
+                    <div class="result-label">Core Skills</div>
+                    <div class="result-value" id="resSkills"></div>
+                </div>
+                <div class="result-item full-width">
+                    <div class="result-label">AI Analysis</div>
+                    <div class="result-value" id="resAnalysis"></div>
+                </div>
+            </div>
+            
+            <div class="sync-status" id="resSync"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const fileNameDisplay = document.getElementById('fileName');
+    const loading = document.getElementById('loading');
+    const result = document.getElementById('result');
+    let selectedFile = null;
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault(); uploadArea.classList.remove('dragover');
+        if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length) handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+        if (file.type !== 'application/pdf') { alert('Please select a PDF file.'); return; }
+        selectedFile = file;
+        fileNameDisplay.textContent = `Selected: ${file.name}`;
+        analyzeBtn.disabled = false;
+        result.style.display = 'none';
+    }
+
+    analyzeBtn.addEventListener('click', async () => {
+        if (!selectedFile) return;
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        
+        analyzeBtn.disabled = true; loading.style.display = 'block'; result.style.display = 'none';
+        try {
+            const response = await fetch('/api/v1/analyze-cv', { method: 'POST', body: formData });
+            const data = await response.json();
+            loading.style.display = 'none'; result.style.display = 'block';
+            
+            if (data.status === 'success') {
+                document.getElementById('errorMessage').textContent = '';
+                document.getElementById('successContent').style.display = 'block';
+                document.getElementById('resName').textContent = data.data.candidate_name || 'N/A';
+                document.getElementById('resExp').textContent = data.data.experience_years || '0';
+                document.getElementById('resSkills').textContent = data.data.skills || 'N/A';
+                document.getElementById('resScore').textContent = data.data.suitability_score ? `${data.data.suitability_score}/100` : 'N/A';
+                document.getElementById('resClass').textContent = data.data.classification || 'N/A';
+                document.getElementById('resAnalysis').textContent = data.data.analysis || 'N/A';
+                document.getElementById('resSync').textContent = data.sheets_sync.success ? '✅ Saved to Google Sheets' : `⚠️ Google Sheets Sync Failed: ${data.sheets_sync.message}`;
+            } else {
+                document.getElementById('errorMessage').textContent = data.message || 'An error occurred';
+                document.getElementById('successContent').style.display = 'none';
+            }
+        } catch (err) {
+            loading.style.display = 'none'; result.style.display = 'block';
+            document.getElementById('errorMessage').textContent = `Request failed: ${err.message}`;
+            document.getElementById('successContent').style.display = 'none';
+        } finally { analyzeBtn.disabled = false; }
+    });
+</script>
+</body>
+</html>
