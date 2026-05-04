@@ -32,6 +32,7 @@ def save_to_sheets(candidate_data: dict):
             "Skills", 
             "Suitability Score", 
             "Classification", 
+            "Action",
             "AI Analysis"
         ]
         
@@ -44,12 +45,26 @@ def save_to_sheets(candidate_data: dict):
             # Fallback if row_values(1) fails for any reason
             sheet.insert_row(headers, index=1)
             
+        score = candidate_data.get("suitability_score", 0)
+        try:
+            score = int(score)
+        except (ValueError, TypeError):
+            score = 0
+            
+        if score >= 80:
+            action = "interview"
+        elif score >= 50:
+            action = "screen"
+        else:
+            action = "reject"
+            
         row = [
             candidate_data.get("candidate_name", ""),
             candidate_data.get("experience_years", ""),
             candidate_data.get("skills", ""),
             candidate_data.get("suitability_score", ""),
             candidate_data.get("classification", ""),
+            action,
             candidate_data.get("analysis", "")
         ]
         sheet.append_row(row)

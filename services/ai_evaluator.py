@@ -21,14 +21,15 @@ def evaluate_candidate(cv_text: str) -> dict:
     
     genai.configure(api_key=gemini_key)
     
-    prompt = f"""You are an expert HR recruiter. Please analyze the following CV and extract details.
+    prompt = f"""You are an expert HR recruiter evaluating a candidate for the "React and MongoDB Full-Stack Developer" role. 
+Please analyze the following CV and extract details.
 Return ONLY a valid JSON object with the following exactly keys (do not add any markdown, just output JSON):
 - "candidate_name" (string, full candidate name)
 - "experience_years" (integer, total number of years or 0)
 - "skills" (string, comma separated)
-- "suitability_score" (integer from 1-100)
-- "classification" (string, exact value from: "Junior", "Mid-level", "Senior", "Not Suitable")
-- "analysis" (string, short 1-2 sentence explanation of suitability based on the profile)
+- "suitability_score" (integer from 1-100, based on fit for React and MongoDB full-stack role)
+- "classification" (string, exact value from: "Junior", "Mid-level", "Senior")
+- "analysis" (string, explanation of suitability. You MUST explicitly state if the requirements (React and MongoDB) are "met" or "not met" in this field)
 
 Here is the CV text:
 {cv_text}
