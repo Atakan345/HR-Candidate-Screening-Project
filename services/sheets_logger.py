@@ -28,6 +28,7 @@ def save_to_sheets(candidate_data: dict):
         
         headers = [
             "Candidate Name", 
+            "Email",
             "Experience (Years)", 
             "Skills", 
             "Suitability Score", 
@@ -60,6 +61,7 @@ def save_to_sheets(candidate_data: dict):
             
         row = [
             candidate_data.get("candidate_name", ""),
+            candidate_data.get("email", ""),
             candidate_data.get("experience_years", ""),
             candidate_data.get("skills", ""),
             candidate_data.get("suitability_score", ""),

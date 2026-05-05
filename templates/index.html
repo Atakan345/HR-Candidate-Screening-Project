@@ -245,8 +245,12 @@
                     <div class="result-value" id="resName" style="font-weight: 600;"></div>
                 </div>
                 <div class="result-item">
+                    <div class="result-label">Email</div>
+                    <div class="result-value" id="resEmail"></div>
+                </div>
+                <div class="result-item">
                     <div class="result-label">Experience</div>
-                    <div class="result-value"><span id="resExp"></span> Years</div>
+                    <div class="result-value" id="resExp"></div>
                 </div>
                 <div class="result-item">
                     <div class="result-label">Suitability Score</div>
@@ -313,12 +317,28 @@
             if (data.status === 'success') {
                 document.getElementById('errorMessage').textContent = '';
                 document.getElementById('successContent').style.display = 'block';
-                document.getElementById('resName').textContent = data.data.candidate_name || 'N/A';
-                document.getElementById('resExp').textContent = data.data.experience_years || '0';
-                document.getElementById('resSkills').textContent = data.data.skills || 'N/A';
+                
+                const formatInvalid = (val) => {
+                    if (!val || String(val).toLowerCase() === 'invalid') {
+                        return '<span style="color: var(--danger); font-weight: bold;">invalid</span>';
+                    }
+                    return String(val);
+                };
+
+                document.getElementById('resName').innerHTML = formatInvalid(data.data.candidate_name);
+                document.getElementById('resEmail').innerHTML = formatInvalid(data.data.email);
+                
+                const exp = data.data.experience_years;
+                if (!exp || String(exp).toLowerCase() === 'invalid') {
+                    document.getElementById('resExp').innerHTML = formatInvalid(exp);
+                } else {
+                    document.getElementById('resExp').textContent = exp + ' Years';
+                }
+
+                document.getElementById('resSkills').innerHTML = formatInvalid(data.data.skills);
                 document.getElementById('resScore').textContent = data.data.suitability_score ? `${data.data.suitability_score}/100` : 'N/A';
-                document.getElementById('resClass').textContent = data.data.classification || 'N/A';
-                document.getElementById('resAnalysis').textContent = data.data.analysis || 'N/A';
+                document.getElementById('resClass').innerHTML = formatInvalid(data.data.classification);
+                document.getElementById('resAnalysis').innerHTML = formatInvalid(data.data.analysis);
                 document.getElementById('resSync').textContent = data.sheets_sync.success ? '✅ Saved to Google Sheets' : `⚠️ Google Sheets Sync Failed: ${data.sheets_sync.message}`;
             } else {
                 document.getElementById('errorMessage').textContent = data.message || 'An error occurred';

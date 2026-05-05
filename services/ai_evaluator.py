@@ -12,8 +12,9 @@ def evaluate_candidate(cv_text: str) -> dict:
     if not gemini_key:
         return {
             "candidate_name": "No Name (API key missing)",
-            "experience_years": 0,
-            "skills": "",
+            "email": "invalid",
+            "experience_years": "invalid",
+            "skills": "invalid",
             "suitability_score": 0,
             "classification": "Not Suitable",
             "analysis": "Lütfen .env dosyasına Gemini_API_Key değerini girin."
@@ -24,9 +25,10 @@ def evaluate_candidate(cv_text: str) -> dict:
     prompt = f"""You are an expert HR recruiter evaluating a candidate for the "React and MongoDB Full-Stack Developer" role. 
 Please analyze the following CV and extract details.
 Return ONLY a valid JSON object with the following exactly keys (do not add any markdown, just output JSON):
-- "candidate_name" (string, full candidate name)
-- "experience_years" (integer, total number of years or 0)
-- "skills" (string, comma separated)
+- "candidate_name" (string, full candidate name, or "invalid" if not found)
+- "email" (string, candidate's email address, or "invalid" if not found)
+- "experience_years" (string, total number of years, or "invalid" if not found)
+- "skills" (string, comma separated, or "invalid" if not found)
 - "suitability_score" (integer from 1-100, based on fit for React and MongoDB full-stack role)
 - "classification" (string, exact value from: "Junior", "Mid-level", "Senior")
 - "analysis" (string, explanation of suitability. You MUST explicitly state if the requirements (React and MongoDB) are "met" or "not met" in this field)
@@ -53,8 +55,9 @@ Here is the CV text:
     except Exception as e:
         return {
             "candidate_name": "Extraction Error",
-            "experience_years": 0,
-            "skills": "",
+            "email": "invalid",
+            "experience_years": "invalid",
+            "skills": "invalid",
             "suitability_score": 0,
             "classification": "Not Suitable",
             "analysis": f"AI extraction failed: {str(e)}"
