@@ -30,7 +30,7 @@ Return ONLY a valid JSON object with the following exactly keys (do not add any 
 - "experience_years" (string, total number of years, or "invalid" if not found)
 - "skills" (string, comma separated, or "invalid" if not found)
 - "suitability_score" (integer from 1-100, based on fit for React and MongoDB full-stack role)
-- "classification" (string, exact value from: "Junior", "Mid-level", "Senior")
+- "classification" (string, exact value from: "Junior", "Senior")
 - "analysis" (string, explanation of suitability. You MUST explicitly state if the requirements (React and MongoDB) are "met" or "not met" in this field)
 
 Here is the CV text:

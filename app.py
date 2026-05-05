@@ -53,12 +53,17 @@ async def analyze_cv(file: UploadFile = File(...)):
     logger.info("Saving results to Google Sheets...")
     sheets_success, sheets_msg = save_to_sheets(analysis_result)
     
-    # 4. Notify Slack if Senior
+    # 4. Notify Slack if score >= 85
     slack_success = None
     slack_msg = None
-    classification = str(analysis_result.get("classification", "")).strip().lower()
-    if classification == "senior":
-        logger.info("Senior candidate detected, sending Slack notification...")
+    score = analysis_result.get("suitability_score", 0)
+    try:
+        score = int(score)
+    except (ValueError, TypeError):
+        score = 0
+        
+    if score >= 85:
+        logger.info(f"High suitability score ({score}) detected, sending Slack notification...")
         slack_success, slack_msg = send_slack_notification(analysis_result)
     
     return {
@@ -69,7 +74,7 @@ async def analyze_cv(file: UploadFile = File(...)):
             "message": sheets_msg
         },
         "slack_notification": {
-            "triggered": classification == "senior",
+            "triggered": score >= 85,
             "success": slack_success,
             "message": slack_msg
         }
